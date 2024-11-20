@@ -1,8 +1,8 @@
 name: Build image to ghcr.io
 
 on:
-  push: 
-    branches: 
+  push:
+    branches:
       - main
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -24,6 +24,9 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Convert repository name to lowercase
+        run: echo "REPO=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> ${GITHUB_ENV}
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
@@ -32,4 +35,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/${{ env.REPO }}:latest
