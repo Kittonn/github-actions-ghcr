@@ -10,7 +10,7 @@ COPY . .
 
 RUN go build -o main ./cmd/api/main.go 
 
-FROM alpine AS runner
+FROM scratch AS runner
 
 WORKDIR /app
 
